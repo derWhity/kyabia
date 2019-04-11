@@ -1,0 +1,441 @@
+# API definition for the Kyabia server API
+swagger: '2.0'
+
+# This is your document metadata
+info:
+  title: Kyabia
+  description: |
+    Kyabia - **K**araoke **Vi**deo **Ar**biter | API for the Web frontend
+  version: "0.1.0"
+
+# Main service information
+host: 'localhost:3210'
+basePath: '/api'
+schemes:
+  - 'https'
+  - 'http'
+consumes:
+  - 'application/json'
+produces:
+  - 'application/json'
+
+tags:
+  - 
+    name: 'Admin API'
+    description: | 
+      Administrator's API. Can only be accessed by logged-in Admin users.
+  -
+    name: 'Guest API'
+    description: |
+      Guest API. Can be accessed by every user - even anonymous ones.
+
+# Path descriptions
+paths:
+  /dirs/{pathName}:
+    get:
+      tags:
+        - 'Admin API'
+      description: |
+        Lists all directories inside the given path
+      security:
+        - sessionToken: []
+      parameters:
+        -
+          name: 'pathName'
+          in: path
+          type: string
+          required: true
+          description: "The path on the server's file system"
+      responses:
+        200:
+          description: 'Successful response'
+          schema:
+            $ref: '#/definitions/DirListResponse'
+        403:
+          description: 'Not authorized or insufficient rights'
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        404:
+          description: | 
+            Path not found
+            
+            Error code returned: NONEXISTING_DIR
+          
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /scrapes:
+    get:
+      tags:
+        - 'Admin API'
+      description: |
+        Retrieves a list with the status of all scraping operations currently 
+        queued.
+        
+        A scraping operation is always identified by the root directory path
+        where the operation began. Multiple operations on the same root path
+        (or a sub-path of it) are not allowed.
+      security:
+        - sessionToken: []
+      responses:
+        200:
+          description: 'Successful response'
+          schema:
+            $ref: '#/definitions/ScrapeListResponse'
+        403:
+          description: 'Not authorized or insufficient rights'
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /scrape/{pathName}:
+    get:
+      tags:
+        - 'Admin API'
+      description: |
+        Retrieves the status of the given scrape
+      security:
+        - sessionToken: []
+      parameters:
+        -
+          name: 'pathName'
+          in: path
+          type: string
+          required: true
+          description: "The path on the server's file system that identifies the scrape"
+      responses:
+        200:
+          description: 'Successful response'
+          schema:
+            $ref: '#/definitions/ScrapeResponse'
+    post:
+      tags:
+        - 'Admin API'
+      description: |
+        Starts a scraping operation on the given path.
+        
+        All known video filetypes will be scraped into the video database. 
+        During this operation, the scraper tries to get as much metadata from
+        the scraped video files as possible. 
+        
+        Duplicates (identified by their hash value) will be updated, unknown 
+        files added.
+        
+        Only one scraping operation is allowed to run for a specific path and
+        all of its subdirectories.
+      security:
+        - sessionToken: []
+      parameters:
+        -
+          name: 'pathName'
+          in: path
+          type: string
+          required: true
+          description: "The path on the server's file system"
+      responses:
+        202:
+          description: 'Scraping operation has been started'
+        403:
+          description: 'Not authorized or insufficient rights'
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        409:
+          description: |
+            Operation already queued for this path
+            
+            Error code returned: SCRAPE_ALREADY_QUEUED
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /videos:
+    get:
+      tags:
+        - 'Guest API'
+      description: |
+        Returns a list of videos in the database
+      responses:
+        200:
+          description: 'Successful response'
+  /playlists:
+    get:
+      tags:
+        - 'Admin API'
+      description: |
+        Gets the list of available playlists.
+      security:
+        - 'sessionToken': []
+      parameters:
+        -
+          name: includeItems
+          in: query
+          required: false
+          type: boolean
+          default: false
+      responses:
+        200:
+          description: 'Successful response'
+        403:
+          description: 'Not authorized or insufficient rights'
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    post:
+      tags:
+        - 'Admin API'
+      description: |
+        Creates a new, empty playlist
+      security:
+        - 'sessionToken': []
+      responses:
+        200:
+          description: 'Contents of the requested playlist'
+        403:
+          description: 'Not authorized or insufficient rights'
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /playlists/main:
+    get:
+      tags:
+        - 'Guest API'
+      description: |
+        Returns the contents of the main playlist for the karaoke event 
+        currently running. Since this endpoint is intended for anonymous usage,
+        the playlist only contains the upcoming videos, not the ones that have
+        already played.
+      responses:
+        200:
+          description: 'Contents of the "main" playlist'
+  /playlists/{listId}:
+    get:
+      tags:
+        - 'Admin API'
+      description: |
+        Returns the the given playlist
+      security:
+        - 'sessionToken': []
+      parameters:
+        -
+          name: 'listId'
+          in: path
+          type: string
+          required: true
+          description: 'The ID of the list to retrieve'
+      responses:
+        200:
+          description: 'The requested playlist'
+        403:
+          description: 'Not authorized or insufficient rights'
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    put:
+      tags:
+        - 'Admin API'
+      description: |
+        Updates the list information of the given playlist
+      security:
+        - 'sessionToken': []
+      parameters:
+        -
+          name: 'listId'
+          in: path
+          type: string
+          required: true
+          description: 'The ID of the list to update'
+      responses:
+        200:
+          description: 'The updated playlist'
+        403:
+          description: 'Not authorized or insufficient rights'
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    delete:
+      tags:
+        - 'Admin API'
+      description: |
+        Deletes the given playlist
+      security:
+        - 'sessionToken': []
+      parameters:
+        -
+          name: 'listId'
+          in: path
+          type: string
+          required: true
+          description: 'The ID of the list to delete'
+      responses:
+        200:
+          description: 'Deletion successful'
+        403:
+          description: 'Not authorized or insufficient rights'
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /playlists/main/items:
+    get:
+      tags:
+        - 'Guest API'
+      description: |
+        Returns the items queued on the main playlist.
+        
+        Since this endpoint is used for anonymous usage, only the upcoming items
+        in the playlist are returned. Already played ones will be omitted.
+      responses:
+        200:
+          description: 'Playlist item response'
+    post:
+      tags:
+        - 'Guest API'
+      description: |
+        Add an item to the main playlist
+      responses:
+        200:
+          description: 'Addition successful'
+        403:
+          description: 'Not authorized or insufficient rights'
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /playlists/{listId}/items:
+    get:
+      tags:
+        - 'Admin API'
+      description: |
+        Returns the items queued on the given playlist
+      security:
+        - 'sessionToken': []
+      parameters:
+        -
+          name: 'listId'
+          in: path
+          type: string
+          required: true
+          description: 'The ID of the list to retrieve the items from'
+      responses:
+        200:
+          description: 'Playlist item response'
+        403:
+          description: 'Not authorized or insufficient rights'
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    post:
+      tags:
+        - 'Admin API'
+      description: |
+        Add an item to the selected playlist
+      security:
+        - 'sessionToken': []
+      parameters:
+        -
+          name: 'listId'
+          in: path
+          type: string
+          required: true
+          description: 'The ID of the list to add a queued item to'
+      responses:
+        200:
+          description: 'Addition successful'
+        403:
+          description: 'Not authorized or insufficient rights'
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+# Data type definitions
+definitions:
+  DefaultResponse:
+    type: object
+    required:
+      - ok
+    properties:
+      ok:
+        type: boolean
+        description: |
+          `true` if the call was successful, `false` if not
+  ErrorResponse:
+    type: object
+    allOf:
+      - $ref: '#/definitions/DefaultResponse'
+    properties:
+      error:
+        type: string
+        description: |
+          A machine-readable error code
+      errorMessage:
+        type: string
+        description: |
+          A human-readable description of the error
+  DirListResponse:
+    type: object
+    allOf:  
+      - $ref: '#/definitions/DefaultResponse'
+    properties:
+      data:
+        type: array
+        items:
+          type: string
+        description: |
+          A list containing the names of all subdirectories
+  ScrapeListResponse:
+    type: object
+    allOf:
+      - $ref: '#/definitions/DefaultResponse'
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/Scrape'
+        description: |
+          List of scrapes in the queue
+  ScrapeResponse:
+    type: object
+    allOf:
+      - $ref: '#/definitions/DefaultResponse'
+    properties:
+      data:
+        $ref: '#/definitions/Scrape'
+    description: |
+        The requested scrape
+  Scrape:
+    type: object
+    properties:
+      status:
+        type: string
+        description: 'The status of the scrape'
+        enum:
+          - 'queued'
+          - 'running'
+          - 'finished'
+          - 'failed'
+          - 'cancelled'
+      rootDir:
+        type: string
+        description: 'The root directory the scrape started at'
+      currentDir:
+        type: string
+        description: 'The current directory the scrape is working on'
+      currentFile:
+        type: string
+        description: 'The current file the scrape is working on'
+      filesScraped:
+        type: number
+        format: int64
+        description: 'The number of files already scraped'
+      newFiles:
+        type: number
+        format: int64
+        description: |
+          The number of files scraped that were added to the database
+      updatedFiles:
+        type: number
+        format: int64
+        description: |
+          The number of files scraped that were updated in the database
+      startedAt:
+        type: string
+        format: date-time
+        description: |
+          The timestamp when the scrape was started
+      error:
+        type: string
+        description: |
+          If the scrape failed, this is the error that caused it
+    
+
+# Available security types                  
+securityDefinitions:
+  sessionToken:
+    type: apiKey
+    in: header
+    name: token
