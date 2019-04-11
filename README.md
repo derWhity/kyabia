@@ -1,6 +1,6 @@
 # Kyabia - **K**araoke **Vi**deo **Ar**biter
 
-![](logo.png)!
+![](logo.png)
 
 A simple wishlist system for Karaoke events. Provides a song database as well as a playlist for upcoming songs.
 The song database can be auto-filled by scraping video files from local directories.
