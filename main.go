@@ -66,7 +66,7 @@ func main() {
 	configFile := flag.String(
 		"config",
 		filepath.Join(execDir, "config.json"),
-		"The configuration file to load the application's configruation from",
+		"The configuration file to load the application's configuration from",
 	)
 
 	ctx := context.Background()
@@ -149,7 +149,7 @@ func main() {
 
 	// Listen for stop signals that will end the service
 	go func() {
-		c := make(chan os.Signal)
+		c := make(chan os.Signal, 2)
 		signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
 		err := fmt.Errorf("%s", <-c)
 		logger.Info("Caught signal to stop. Shutting down.")

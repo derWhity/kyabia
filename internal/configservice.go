@@ -39,7 +39,7 @@ type ConfigService interface {
 	Write(ctx context.Context) error
 	// WriteToFile writes the current application configuration to a JSON file
 	WriteToFile(ctx context.Context, filename string) error
-	// GetConfig retuns the current application configuration
+	// GetConfig returns the current application configuration
 	GetConfig(ctx context.Context) models.AppConfig
 }
 

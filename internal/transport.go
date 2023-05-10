@@ -5,13 +5,10 @@ import (
 	"fmt"
 	"net/http"
 	"path"
-	"strconv"
-
-	"strings"
-
 	"path/filepath"
-
 	"regexp"
+	"strconv"
+	"strings"
 
 	"github.com/derWhity/kyabia/internal/ctxhelper"
 	"github.com/derWhity/kyabia/internal/log"
@@ -413,7 +410,7 @@ func decodeIPAddressFromJSONBody(_ context.Context, r *http.Request) (interface{
 		return nil, MakeError(
 			http.StatusBadRequest,
 			ErrCodeIllegalJSON,
-			fmt.Sprint("Missing IP address parameter"),
+			"Missing IP address parameter",
 		)
 	}
 	return ip, nil

@@ -82,7 +82,7 @@ func (s *eventService) List(ctx context.Context, search *Search) ([]models.Event
 		return nil, 0, MakeErrorWithData(
 			http.StatusInternalServerError,
 			ErrCodeRepoError,
-			fmt.Sprintf("Error while searching events"),
+			"Error while searching events",
 			err,
 		)
 	}

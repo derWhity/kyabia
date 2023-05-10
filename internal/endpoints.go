@@ -122,7 +122,7 @@ func MakeAddToWhitelistEndpoint(s ConfigService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		ipAddr, ok := request.(string)
 		if !ok {
-			return nil, fmt.Errorf("Missing IP address parameter")
+			return nil, fmt.Errorf("missing IP address parameter")
 		}
 		if err := s.AddToWhitelist(ctx, ipAddr); err != nil {
 			return nil, err
@@ -136,7 +136,7 @@ func MakeRemoveFromWhitelistEndpoint(s ConfigService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		ipAddr, ok := request.(string)
 		if !ok {
-			return nil, fmt.Errorf("Missing IP address parameter")
+			return nil, fmt.Errorf("missing IP address parameter")
 		}
 		if err := s.RemoveFromWhitelist(ctx, ipAddr); err != nil {
 			return nil, err
@@ -162,7 +162,7 @@ func MakeListDirsEndpoint(s ScrapingService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		parentDir, ok := request.(string)
 		if !ok {
-			return nil, fmt.Errorf("Illegal path parameter")
+			return nil, fmt.Errorf("illegal path parameter")
 		}
 		lst, err := s.ListDirs(ctx, parentDir)
 		if err != nil {
@@ -188,7 +188,7 @@ func MakeGetScrapeEndpoint(s ScrapingService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		rootDir, ok := request.(string)
 		if !ok {
-			return nil, fmt.Errorf("Illegal path parameter")
+			return nil, fmt.Errorf("illegal path parameter")
 		}
 		return basicResponse{true, s.GetScrape(ctx, rootDir)}, nil
 	}
@@ -199,7 +199,7 @@ func MakeStartEndpoint(s ScrapingService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		rootDir, ok := request.(string)
 		if !ok {
-			return nil, fmt.Errorf("Illegal path parameter")
+			return nil, fmt.Errorf("illegal path parameter")
 		}
 		err := s.Start(ctx, rootDir)
 		if err != nil {
@@ -235,7 +235,7 @@ func MakeListVideosEndpoint(s VideoService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		search, ok := request.(Search)
 		if !ok {
-			return nil, fmt.Errorf("Illegal search parameter")
+			return nil, fmt.Errorf("illegal search parameter")
 		}
 		vids, numRows, err := s.List(ctx, &search)
 		if err != nil {
@@ -256,7 +256,7 @@ func MakeGetVideoEndpoint(s VideoService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		id, ok := request.(string)
 		if !ok {
-			return nil, fmt.Errorf("Illegal video ID parameter")
+			return nil, fmt.Errorf("illegal video ID parameter")
 		}
 		vid, err := s.Get(ctx, id)
 		if err != nil {
@@ -271,7 +271,7 @@ func MakeUpdateVideoEndpoint(s VideoService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		vid, ok := request.(models.Video)
 		if !ok {
-			return nil, fmt.Errorf("Illegal video parameter")
+			return nil, fmt.Errorf("illegal video parameter")
 		}
 		if err := s.Update(ctx, &vid); err != nil {
 			return nil, err
@@ -285,7 +285,7 @@ func MakeDeleteVideoEndpoint(s VideoService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		id, ok := request.(string)
 		if !ok {
-			return nil, fmt.Errorf("Illegal video ID parameter")
+			return nil, fmt.Errorf("illegal video ID parameter")
 		}
 		if err := s.Delete(ctx, id); err != nil {
 			return nil, err
@@ -320,7 +320,7 @@ func MakeListPlaylistsEndpoint(s PlaylistService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		se, ok := request.(Search)
 		if !ok {
-			return nil, fmt.Errorf("Illegal search parameter")
+			return nil, fmt.Errorf("illegal search parameter")
 		}
 		lists, numRows, err := s.List(ctx, &se)
 		if err != nil {
@@ -335,7 +335,7 @@ func MakeCreatePlaylistEndpoint(s PlaylistService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		playlist, ok := request.(models.Playlist)
 		if !ok {
-			return nil, fmt.Errorf("Illegal playlist parameter")
+			return nil, fmt.Errorf("illegal playlist parameter")
 		}
 		pl, err := s.Create(ctx, &playlist)
 		if err != nil {
@@ -350,7 +350,7 @@ func MakeGetPlaylistEndpoint(s PlaylistService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		id, ok := request.(uint)
 		if !ok {
-			return nil, fmt.Errorf("Illegal playlist ID")
+			return nil, fmt.Errorf("illegal playlist ID")
 		}
 		pl, err := s.Get(ctx, id)
 		if err != nil {
@@ -365,7 +365,7 @@ func MakeUpdatePlaylistEndpoint(s PlaylistService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		playlist, ok := request.(models.Playlist)
 		if !ok {
-			return nil, fmt.Errorf("Illegal playlist parameter")
+			return nil, fmt.Errorf("illegal playlist parameter")
 		}
 		err := s.Update(ctx, &playlist)
 		if err != nil {
@@ -380,7 +380,7 @@ func MakeDeletePlaylistEndpoint(s PlaylistService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		id, ok := request.(uint)
 		if !ok {
-			return nil, fmt.Errorf("Illegal playlist ID")
+			return nil, fmt.Errorf("illegal playlist ID")
 		}
 		err := s.Delete(ctx, id)
 		if err != nil {
@@ -395,7 +395,7 @@ func MakeAddPlaylistEntryEndpoint(s PlaylistService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req, ok := request.(models.PlaylistEntry)
 		if !ok {
-			return nil, fmt.Errorf("Illegal playlist entry request")
+			return nil, fmt.Errorf("illegal playlist entry request")
 		}
 		err := s.AddEntry(ctx, req.PlaylistID, &req)
 		if err != nil {
@@ -410,7 +410,7 @@ func MakeListPlaylistEntriesEndpoint(s PlaylistService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req, ok := request.(playlistEntryListRequest)
 		if !ok {
-			return nil, fmt.Errorf("Illegal playlist list request")
+			return nil, fmt.Errorf("illegal playlist list request")
 		}
 		list, numRows, err := s.ListEntries(ctx, req.PlaylistID, req.Offset, req.Limit)
 		if err != nil {
@@ -437,7 +437,7 @@ func MakeListMainPlaylistEntriesEndpoint(s PlaylistService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		pag, ok := request.(Pagination)
 		if !ok {
-			return nil, fmt.Errorf("Illegal pagination parameter")
+			return nil, fmt.Errorf("illegal pagination parameter")
 		}
 		list, numRows, err := s.ListMainEntries(ctx, pag.Offset, pag.Limit)
 		if err != nil {
@@ -452,7 +452,7 @@ func MakeUpdateEntryEndpoint(s PlaylistService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req, ok := request.(models.PlaylistEntry)
 		if !ok {
-			return nil, fmt.Errorf("Illegal playlist entry")
+			return nil, fmt.Errorf("illegal playlist entry")
 		}
 		err := s.UpdateEntry(ctx, req)
 		if err != nil {
@@ -467,7 +467,7 @@ func MakeDeleteEntryEndpoint(s PlaylistService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		id, ok := request.(uint)
 		if !ok {
-			return nil, fmt.Errorf("Illegal entry ID")
+			return nil, fmt.Errorf("illegal entry ID")
 		}
 		err := s.DeleteEntry(ctx, id)
 		if err != nil {
@@ -482,7 +482,7 @@ func MakePlaceEntryBeforeEndpint(s PlaylistService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req, ok := request.(reorderRequest)
 		if !ok {
-			return nil, fmt.Errorf("Illegal reorder request")
+			return nil, fmt.Errorf("illegal reorder request")
 		}
 		err := s.PlaceEntryBefore(ctx, req.Entry, req.OtherEntry)
 		if err != nil {
@@ -497,7 +497,7 @@ func MakeAddMainPlaylistEntryEndpoint(s PlaylistService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req, ok := request.(models.PlaylistEntry)
 		if !ok {
-			return nil, fmt.Errorf("Illegal playlist entry request")
+			return nil, fmt.Errorf("illegal playlist entry request")
 		}
 		err := s.AddMainEntry(ctx, &req)
 		if err != nil {
@@ -526,7 +526,7 @@ func makeListEventsEndpoint(s EventService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		se, ok := request.(Search)
 		if !ok {
-			return nil, fmt.Errorf("Illegal search parameter")
+			return nil, fmt.Errorf("illegal search parameter")
 		}
 		list, numRows, err := s.List(ctx, &se)
 		if err != nil {
@@ -540,7 +540,7 @@ func makeGetEventEndpoint(s EventService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		id, ok := request.(uint)
 		if !ok {
-			return nil, fmt.Errorf("Illegal event ID")
+			return nil, fmt.Errorf("illegal event ID")
 		}
 		ev, err := s.Get(ctx, id)
 		if err != nil {
@@ -554,7 +554,7 @@ func makeCreateEventEndpoint(s EventService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		event, ok := request.(models.Event)
 		if !ok {
-			return nil, fmt.Errorf("Illegal event parameter")
+			return nil, fmt.Errorf("illegal event parameter")
 		}
 		ev, err := s.Create(ctx, &event)
 		if err != nil {
@@ -568,7 +568,7 @@ func makeUpdateEventEndpoint(s EventService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		event, ok := request.(models.Event)
 		if !ok {
-			return nil, fmt.Errorf("Illegal event parameter")
+			return nil, fmt.Errorf("illegal event parameter")
 		}
 		err := s.Update(ctx, &event)
 		if err != nil {
@@ -582,7 +582,7 @@ func makeDeleteEventEndpoint(s EventService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		id, ok := request.(uint)
 		if !ok {
-			return nil, fmt.Errorf("Illegal event ID")
+			return nil, fmt.Errorf("illegal event ID")
 		}
 		err := s.Delete(ctx, id)
 		if err != nil {
@@ -596,7 +596,7 @@ func makeSetCurrentEventEndpoint(s EventService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		id, ok := request.(uint)
 		if !ok {
-			return nil, fmt.Errorf("Illegal event ID")
+			return nil, fmt.Errorf("illegal event ID")
 		}
 		err := s.SetCurrentEvent(ctx, id)
 		if err != nil {
@@ -631,7 +631,7 @@ func makeLoginEndpoint(s SessionService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		se, ok := request.(loginRequest)
 		if !ok {
-			return nil, fmt.Errorf("Illegal login request")
+			return nil, fmt.Errorf("illegal login request")
 		}
 		si, err := s.Login(ctx, se.User, se.Pass)
 		if err != nil {
@@ -645,7 +645,7 @@ func makeLogoutEndpoint(s SessionService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		id, ok := request.(string)
 		if !ok {
-			return nil, fmt.Errorf("Illegal session token")
+			return nil, fmt.Errorf("illegal session token")
 		}
 		err := s.Logout(ctx, id)
 		if err != nil {
@@ -659,7 +659,7 @@ func makeWhoAmIEndpoint(s SessionService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		id, ok := request.(string)
 		if !ok {
-			return nil, fmt.Errorf("Illegal session token")
+			return nil, fmt.Errorf("illegal session token")
 		}
 		si, err := s.WhoAmI(ctx, id)
 		if err != nil {

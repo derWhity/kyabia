@@ -82,12 +82,12 @@ func ScrapeFFProbe(filename string, vid *models.Video, logger *logrus.Entry) err
 	).Output()
 	if err != nil {
 		logger.WithError(err).Error("Could not execute ffprobe")
-		return fmt.Errorf("Failed to execute ffprobe for %s: %v", filename, err)
+		return fmt.Errorf("failed to execute ffprobe for %s: %v", filename, err)
 	}
 	probeData := &FFProbeData{}
 	if err := json.Unmarshal(data, probeData); err != nil {
 		logger.WithError(err).Error("Failed to parse ffprobe JSON output")
-		return fmt.Errorf("Failed to read ffprobe output for %s: %v", filename, err)
+		return fmt.Errorf("failed to read ffprobe output for %s: %v", filename, err)
 	}
 	// Get general info
 	if probeData.Format != nil {
@@ -135,7 +135,7 @@ func ScrapeSHA512(filename string, vid *models.Video, logger *logrus.Entry) erro
 	sha := sha512.New()
 	_, err = io.Copy(sha, buf)
 	if err != nil {
-		return fmt.Errorf("Failed to calculate SHA512 sum of file %s: %v", filename, err)
+		return fmt.Errorf("failed to calculate SHA512 sum of file %s: %v", filename, err)
 	}
 	vid.SHA512 = hex.EncodeToString(sha.Sum(nil))
 	logger.Debug("Scraping finished")

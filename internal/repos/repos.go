@@ -13,7 +13,7 @@ import (
 
 var (
 	// ErrEntityNotExisting is fired by a repository when an entity that is updated or deleted does not exist
-	ErrEntityNotExisting = fmt.Errorf("Cannot update: Entity does not exist")
+	ErrEntityNotExisting = fmt.Errorf("cannot update: Entity does not exist")
 )
 
 // VideoRepo defines a repository that handles storing and querying video information

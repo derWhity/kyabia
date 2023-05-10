@@ -3,7 +3,6 @@ package scraper
 
 import (
 	"fmt"
-	"io/ioutil"
 	"mime"
 	"os"
 	"path"
@@ -52,7 +51,7 @@ var (
 	fileNameScrapingPresets map[string]NameScrapingPreset
 	// ErrAlreadyQueued is the error that is returned when scraping the same or a parent directory is already inside
 	// the scraping queue
-	ErrAlreadyQueued = fmt.Errorf("A scraping operation is already queued for this directory")
+	ErrAlreadyQueued = fmt.Errorf("a scraping operation is already queued for this directory")
 )
 
 // FieldIndexMap describes the correlation between a field of a video struct and the index in the scraping result
@@ -383,16 +382,16 @@ func (scr *Scrape) walkDir(status chan<- Scrape, stop <-chan bool) error {
 	fileInfo, err := os.Stat(dir)
 	if err != nil {
 		if os.IsNotExist(err) || os.IsPermission(err) {
-			return fmt.Errorf("Directory '%s' does not exist or cannot be accessed", dir)
+			return fmt.Errorf("directory '%s' does not exist or cannot be accessed", dir)
 		}
-		return fmt.Errorf("Cannot get directory information for '%s': %v", dir, err)
+		return fmt.Errorf("cannot get directory information for '%s': %v", dir, err)
 	}
 	if !fileInfo.IsDir() {
-		return fmt.Errorf("Target directory is no directory")
+		return fmt.Errorf("target directory is no directory")
 	}
-	files, err := ioutil.ReadDir(dir)
+	files, err := os.ReadDir(dir)
 	if err != nil {
-		return fmt.Errorf("Cannot read contents of directory %s", dir)
+		return fmt.Errorf("cannot read contents of directory %s", dir)
 	}
 	for _, file := range files {
 		// Check, if the scraping operation needs to be stopped
@@ -454,7 +453,7 @@ func (scr *Scrape) file(status chan<- Scrape) error {
 	logger.Info("Scraping video file")
 	for i, fn := range scr.fns {
 		if err := fn(scr.CurrentFile, &vid, logger); err != nil {
-			return fmt.Errorf("Failed to execute scraper #%d (%v): %v", i, fn, err)
+			return fmt.Errorf("failed to execute scraper #%d (%v): %v", i, fn, err)
 		}
 	}
 	if vid.SHA512 == "" {
@@ -576,7 +575,7 @@ func mergeVideos(first models.Video, second models.Video) models.Video {
 // getDefaultNameScrapingPresets returns the built-in sraping presets for the file name scraping function
 func getDefaultNameScrapingPresets() map[string]NameScrapingPreset {
 	return map[string]NameScrapingPreset{
-		"ID-Language-Artist-Title-Type-Anime": NameScrapingPreset{
+		"ID-Language-Artist-Title-Type-Anime": {
 			"ID-Language-Artist-Title-Type-Anime",
 			`^([0-9]+)\-([^\-]+)\-([^\-]+)\-([^\-]+)\-?([^\-]*)?\-?([^\-]*)?(\-([^\-]*))*\.[^\.]+$`,
 			FieldIndexMap{
@@ -588,7 +587,7 @@ func getDefaultNameScrapingPresets() map[string]NameScrapingPreset {
 				FldRelatedMedium: 6,
 			},
 		},
-		"ID-Anime-Title (Type)": NameScrapingPreset{
+		"ID-Anime-Title (Type)": {
 			"ID-Anime-Title (Type)",
 			`^([0-9]+)\-([^\-]+)\-([^-\(]+)(\(([^\(]+)\))?\.[^\.]+$`,
 			FieldIndexMap{
@@ -599,7 +598,7 @@ func getDefaultNameScrapingPresets() map[string]NameScrapingPreset {
 				FldRelatedMedium: 2,
 			},
 		},
-		"ID_Language_Artist_Title_Type_Anime": NameScrapingPreset{
+		"ID_Language_Artist_Title_Type_Anime": {
 			"ID_Language_Artist_Title_Type_Anime",
 			`^([0-9]+)_([^_]+)_([^_]+)_([^_]+)_?([^_]*)?_?([^_]*)?(_([^_]*))*\.[^\.]+$`,
 			FieldIndexMap{
@@ -611,7 +610,7 @@ func getDefaultNameScrapingPresets() map[string]NameScrapingPreset {
 				FldRelatedMedium: 6,
 			},
 		},
-		"ID_Anime_Title (Type)": NameScrapingPreset{
+		"ID_Anime_Title (Type)": {
 			"ID_Anime_Title (Type)",
 			`^([0-9]+)_([^_]+)\_([^_\(]+)(\(([^\(]+)\))?\.[^\.]+$`,
 			FieldIndexMap{

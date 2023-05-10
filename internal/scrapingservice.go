@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"io/ioutil"
 	"net/http"
 	"os"
 	"sort"
@@ -58,7 +57,7 @@ func NewScrapingService(scr *scraper.Scraper, logger *logrus.Entry) ScrapingServ
 
 // ListDirs returns a list of child directories, the selected directory has
 func (s *scrapingService) ListDirs(ctx context.Context, parentDir string) ([]string, error) {
-	fileInfos, err := ioutil.ReadDir(parentDir)
+	fileInfos, err := os.ReadDir(parentDir)
 	if err != nil {
 		if os.IsNotExist(err) || os.IsPermission(err) {
 			return nil, MakeError(

@@ -89,7 +89,9 @@ func RandomString(n int) string {
 func (r *SessionRepo) control(make <-chan sessionRequest, get <-chan sessionRequest, del <-chan sessionRequest) {
 	sessions := map[string]*models.Session{}
 	// Purge channel to purge all expired sessions all ~1 minute
-	purge := time.Tick(time.Minute)
+	ticker := time.NewTicker(time.Minute)
+	defer ticker.Stop()
+	purge := ticker.C
 	for { // To infinity and beyond!
 		select {
 		case req := <-make:
@@ -125,9 +127,7 @@ func (r *SessionRepo) control(make <-chan sessionRequest, get <-chan sessionRequ
 			}
 		case req := <-del:
 			// Delete a session
-			if _, ok := sessions[req.sessionID]; ok {
-				delete(sessions, req.sessionID)
-			}
+			delete(sessions, req.sessionID)
 			req.answer <- sessionResponse{}
 		case <-purge:
 			// Purge all expired sessions

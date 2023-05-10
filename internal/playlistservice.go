@@ -51,7 +51,7 @@ func (s *playlistService) List(ctx context.Context, search *Search) ([]models.Pl
 		return nil, 0, MakeErrorWithData(
 			http.StatusInternalServerError,
 			ErrCodeRepoError,
-			fmt.Sprintf("Error while searching playlists"),
+			"Error while searching playlists",
 			err,
 		)
 	}
@@ -345,7 +345,7 @@ func (s *playlistService) PlaceEntryBefore(ctx context.Context, entryID uint, ot
 		return MakeErrorWithData(
 			http.StatusInternalServerError,
 			ErrCodeRepoError,
-			fmt.Sprintf("Error while reordering playlist entries"),
+			"Error while reordering playlist entries",
 			err,
 		)
 	}
